@@ -2,8 +2,11 @@ package com.todo;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import javax.swing.border.EmptyBorder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 class Task {
 	String title;
@@ -28,7 +31,7 @@ public class ToDoApplication {
 	private JTextField dueDateField;
 	private DefaultListModel<Task> taskListModel;
 	private JList<Task> taskJList;
-	private java.util.ArrayList<Task> taskArray;
+	private ArrayList<Task> taskArray;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(() -> {
@@ -52,7 +55,7 @@ public class ToDoApplication {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
 
-		taskArray = new java.util.ArrayList<>();
+		taskArray = new ArrayList<>();
 		taskListModel = new DefaultListModel<>();
 		taskJList = new JList<>(taskListModel);
 		taskJList.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -85,6 +88,7 @@ public class ToDoApplication {
 
 		JButton addButton = new JButton("Add Task");
 		styleButton(addButton);
+		addButton.addActionListener(e -> addTask()); // FUNCTIONALITY: ADD TASK
 		inputPanel.add(addButton);
 
 		JButton sortButton = new JButton("Sort by Due Date");
@@ -102,35 +106,15 @@ public class ToDoApplication {
 		buttonPanel.setBackground(new Color(240, 248, 255));
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-		JButton toggleDoneButton = new JButton("Toggle Done");
-		toggleDoneButton.setForeground(new Color(0, 128, 192));
-		styleButton(toggleDoneButton);
-		buttonPanel.add(toggleDoneButton);
+		String[] buttonNames = { "Toggle Done", "Delete Task", "Show Pending", "Show Completed", "Show All",
+				"Exit App" };
 
-		JButton deleteButton = new JButton("Delete Task");
-		deleteButton.setForeground(new Color(0, 128, 192));
-		styleButton(deleteButton);
-		buttonPanel.add(deleteButton);
-
-		JButton showPendingButton = new JButton("Show Pending");
-		showPendingButton.setForeground(new Color(0, 128, 192));
-		styleButton(showPendingButton);
-		buttonPanel.add(showPendingButton);
-
-		JButton showCompletedButton = new JButton("Show Completed");
-		showCompletedButton.setForeground(new Color(0, 128, 192));
-		styleButton(showCompletedButton);
-		buttonPanel.add(showCompletedButton);
-
-		JButton showAllButton = new JButton("Show All");
-		showAllButton.setForeground(new Color(0, 128, 192));
-		styleButton(showAllButton);
-		buttonPanel.add(showAllButton);
-
-		JButton exitButton = new JButton("Exit App");
-		exitButton.setForeground(new Color(0, 128, 192));
-		styleButton(exitButton);
-		buttonPanel.add(exitButton);
+		for (String name : buttonNames) {
+			JButton button = new JButton(name);
+			button.setForeground(new Color(0, 128, 192));
+			styleButton(button);
+			buttonPanel.add(button);
+		}
 
 		frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 	}
@@ -141,5 +125,53 @@ public class ToDoApplication {
 		button.setFocusPainted(false);
 		button.setFont(new Font("Segoe UI", Font.BOLD, 16));
 		button.setPreferredSize(new Dimension(165, 35));
+	}
+
+	private void addTask() {
+		String title = titleField.getText().trim();
+		String dueDate = dueDateField.getText().trim();
+
+		if (title.isEmpty()) {
+			JOptionPane.showMessageDialog(frame, "Task title cannot be empty.");
+			return;
+		}
+
+		if (!isValidDate(dueDate)) {
+			JOptionPane.showMessageDialog(frame, "Invalid date format. Please use YYYY-MM-DD.");
+			return;
+		}
+
+		if (isPastDate(dueDate)) {
+			JOptionPane.showMessageDialog(frame, "Due date cannot be in the past.");
+			return;
+		}
+
+		Task newTask = new Task(title, dueDate);
+		taskArray.add(newTask);
+		titleField.setText("");
+		dueDateField.setText("");
+	}
+
+	private boolean isValidDate(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false);
+		try {
+			sdf.parse(date);
+			return true;
+		} catch (ParseException e) {
+			return false;
+		}
+	}
+
+	private boolean isPastDate(String date) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setLenient(false);
+		try {
+			Date inputDate = sdf.parse(date);
+			Date today = sdf.parse(sdf.format(new Date()));
+			return inputDate.before(today);
+		} catch (ParseException e) {
+			return true;
+		}
 	}
 }
