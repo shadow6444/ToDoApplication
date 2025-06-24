@@ -88,7 +88,7 @@ public class ToDoApplication {
 
 		JButton addButton = new JButton("Add Task");
 		styleButton(addButton);
-		addButton.addActionListener(e -> addTask()); // FUNCTIONALITY: ADD TASK
+		addButton.addActionListener(e -> addTask());
 		inputPanel.add(addButton);
 
 		JButton sortButton = new JButton("Sort by Due Date");
@@ -108,12 +108,11 @@ public class ToDoApplication {
 
 		String[] buttonNames = { "Toggle Done", "Delete Task", "Show Pending", "Show Completed", "Show All",
 				"Exit App" };
-
 		for (String name : buttonNames) {
-			JButton button = new JButton(name);
-			button.setForeground(new Color(0, 128, 192));
-			styleButton(button);
-			buttonPanel.add(button);
+			JButton btn = new JButton(name);
+			btn.setForeground(new Color(0, 128, 192));
+			styleButton(btn);
+			buttonPanel.add(btn);
 		}
 
 		frame.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
@@ -148,8 +147,16 @@ public class ToDoApplication {
 
 		Task newTask = new Task(title, dueDate);
 		taskArray.add(newTask);
+		showAllTasks();
 		titleField.setText("");
 		dueDateField.setText("");
+	}
+
+	private void showAllTasks() {
+		taskListModel.clear();
+		for (Task task : taskArray) {
+			taskListModel.addElement(task);
+		}
 	}
 
 	private boolean isValidDate(String date) {
