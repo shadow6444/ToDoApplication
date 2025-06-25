@@ -108,10 +108,22 @@ public class ToDoApplication {
 
 		String[] buttonNames = { "Toggle Done", "Delete Task", "Show Pending", "Show Completed", "Show All",
 				"Exit App" };
+
 		for (String name : buttonNames) {
 			JButton btn = new JButton(name);
 			btn.setForeground(new Color(0, 128, 192));
 			styleButton(btn);
+
+			if (name.equals("Toggle Done")) {
+				btn.addActionListener(e -> toggleTaskDone());
+			} else if (name.equals("Show Pending")) {
+				btn.addActionListener(e -> showPendingTasks());
+			} else if (name.equals("Show Completed")) {
+				btn.addActionListener(e -> showCompletedTasks());
+			} else if (name.equals("Show All")) {
+				btn.addActionListener(e -> showAllTasks());
+			}
+
 			buttonPanel.add(btn);
 		}
 
@@ -156,6 +168,32 @@ public class ToDoApplication {
 		taskListModel.clear();
 		for (Task task : taskArray) {
 			taskListModel.addElement(task);
+		}
+	}
+
+	private void showCompletedTasks() {
+		taskListModel.clear();
+		for (Task task : taskArray) {
+			if (task.isCompleted) {
+				taskListModel.addElement(task);
+			}
+		}
+	}
+
+	private void showPendingTasks() {
+		taskListModel.clear();
+		for (Task task : taskArray) {
+			if (!task.isCompleted) {
+				taskListModel.addElement(task);
+			}
+		}
+	}
+
+	private void toggleTaskDone() {
+		Task selectedTask = taskJList.getSelectedValue();
+		if (selectedTask != null) {
+			selectedTask.isCompleted = !selectedTask.isCompleted;
+			taskJList.repaint();
 		}
 	}
 
