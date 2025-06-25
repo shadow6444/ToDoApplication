@@ -122,6 +122,8 @@ public class ToDoApplication {
 				btn.addActionListener(e -> showCompletedTasks());
 			} else if (name.equals("Show All")) {
 				btn.addActionListener(e -> showAllTasks());
+			} else if (name.equals("Delete Task")) {
+				btn.addActionListener(e -> deleteTask());
 			}
 
 			buttonPanel.add(btn);
@@ -194,6 +196,14 @@ public class ToDoApplication {
 		if (selectedTask != null) {
 			selectedTask.isCompleted = !selectedTask.isCompleted;
 			taskJList.repaint();
+		}
+	}
+
+	private void deleteTask() {
+		Task selectedTask = taskJList.getSelectedValue();
+		if (selectedTask != null) {
+			taskArray.remove(selectedTask);
+			taskListModel.removeElement(selectedTask);
 		}
 	}
 
