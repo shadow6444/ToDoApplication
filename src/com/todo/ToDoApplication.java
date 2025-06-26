@@ -125,8 +125,7 @@ public class ToDoApplication {
 			} else if (name.equals("Delete Task")) {
 				btn.addActionListener(e -> deleteTask());
 			} else if (name.equals("Exit App")) {
-				btn.addActionListener(e -> {
-				});
+				btn.addActionListener(e -> exitApp());
 			}
 
 			buttonPanel.add(btn);
@@ -205,14 +204,26 @@ public class ToDoApplication {
 	private void deleteTask() {
 		Task selectedTask = taskJList.getSelectedValue();
 		if (selectedTask != null) {
-			taskArray.remove(selectedTask);
-			taskListModel.removeElement(selectedTask);
+			int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to delete this task?",
+					"Delete Confirmation", JOptionPane.YES_NO_OPTION);
+			if (confirm == JOptionPane.YES_OPTION) {
+				taskArray.remove(selectedTask);
+				taskListModel.removeElement(selectedTask);
+			}
 		}
 	}
 
 	private void sortTasks() {
 		Collections.sort(taskArray, Comparator.comparing(t -> t.dueDate));
 		showAllTasks();
+	}
+
+	private void exitApp() {
+		int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Exit Confirmation",
+				JOptionPane.YES_NO_OPTION);
+		if (confirm == JOptionPane.YES_OPTION) {
+			System.exit(0);
+		}
 	}
 
 	private boolean isValidDate(String date) {
