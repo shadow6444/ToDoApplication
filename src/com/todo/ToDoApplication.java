@@ -5,8 +5,7 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 class Task {
 	String title;
@@ -94,6 +93,7 @@ public class ToDoApplication {
 		JButton sortButton = new JButton("Sort by Due Date");
 		sortButton.setForeground(new Color(0, 128, 192));
 		styleButton(sortButton);
+		sortButton.addActionListener(e -> sortTasks());
 		inputPanel.add(sortButton);
 
 		frame.getContentPane().add(inputPanel, BorderLayout.NORTH);
@@ -124,6 +124,9 @@ public class ToDoApplication {
 				btn.addActionListener(e -> showAllTasks());
 			} else if (name.equals("Delete Task")) {
 				btn.addActionListener(e -> deleteTask());
+			} else if (name.equals("Exit App")) {
+				btn.addActionListener(e -> {
+				});
 			}
 
 			buttonPanel.add(btn);
@@ -205,6 +208,11 @@ public class ToDoApplication {
 			taskArray.remove(selectedTask);
 			taskListModel.removeElement(selectedTask);
 		}
+	}
+
+	private void sortTasks() {
+		Collections.sort(taskArray, Comparator.comparing(t -> t.dueDate));
+		showAllTasks();
 	}
 
 	private boolean isValidDate(String date) {
